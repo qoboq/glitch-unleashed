@@ -20,6 +20,7 @@ export class NotesRoom extends RoomScene {
     this.round = 0;
     this.listening = false; // true when it is the player's turn
     this.playing = false;
+    this.tune = null;
 
     // four tiles in a diamond
     const spots = [[12, 5.5], [7, 8.5], [17, 8.5], [12, 11]];

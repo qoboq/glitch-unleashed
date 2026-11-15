@@ -20,6 +20,8 @@ export class TownScene extends WorldScene {
   create() {
     this.startWorld();
     this.after = state.part === 'after'; // true once the Glitch House is fixed
+    this.entity = null;
+    this.musicOff = false;
     ui.dark(false);
     ui.progress(null);
     ui.item(state.hasRock ? 'glitch-rock' : null, 'Glitch rock');

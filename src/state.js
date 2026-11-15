@@ -12,6 +12,7 @@ const fresh = () => ({
   part: 'town',       // 'town' -> 'house' -> 'after' -> 'end'
   cheered: false,     // the town has cheered for us
   code: null,         // the secret numbers of the number room
+  townPos: null,      // where we were standing in town when we last saved
 });
 
 export const state = fresh();

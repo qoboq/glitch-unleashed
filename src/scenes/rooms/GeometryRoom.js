@@ -38,6 +38,7 @@ export class GeometryRoom extends RoomScene {
     this.blocks = [];
     this.holes = [];
     this.rockPlaced = false;
+    this.finished = false;
     this.pushTime = 0;
     GRID.forEach((row, j) => [...row].forEach((ch, i) => {
       const x = LEFT + i * CELL + CELL / 2, y = TOP + j * CELL + CELL / 2;
