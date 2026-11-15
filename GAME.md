@@ -6,7 +6,21 @@ Glitch Inspector. You walk around, talk to people and solve puzzles.
 Run it with `npm install` (first time only) and then `npm run dev`.
 
 Controls: arrow keys or WASD to walk, SPACE (or E or Enter) to talk and use
-things, M to turn the sound on and off.
+things, M to turn the sound on and off, ESC for the menu (sound, full screen,
+new game).
+
+On a phone or tablet: hold your left thumb on the screen to walk (a stick
+appears under it), tap the yellow "!" button to talk and use things, tap
+anywhere to read on, and tap the button in the top-left corner for the menu.
+Hold the phone sideways.
+
+## Putting it on the internet (GitHub Pages)
+
+`.github/workflows/deploy.yml` builds the game and publishes it every time
+you push to the `main` branch. One-time setup on GitHub: Settings -> Pages ->
+Source: "GitHub Actions". The game uses relative paths (`base: './'` in
+`vite.config.js`), so it works at any address, for example
+`https://yourname.github.io/glitch-unleashed/`.
 
 ## Story, Part 1: The Glitch House
 
@@ -86,7 +100,8 @@ All drawn in code in `src/characters.js`, copied from the drawings in
 
 ## Testing tricks
 
-- Progress is saved in the browser. On the title screen, N starts a new game.
+- Progress is saved in the browser. "New game" on the title screen or in the
+  menu (ESC) starts over.
 - In the browser console (F12), `game.story` shows the story progress. For
   example `game.story.hasRock = true` gives you the rock.
 
@@ -97,4 +112,5 @@ All drawn in code in `src/characters.js`, copied from the drawings in
 3. ✅ Dialogue box and all the town characters
 4. ✅ The Glitch House: four puzzle rooms
 5. ✅ Ending of Part 1, title screen, sounds and music
-6. Next ideas: your own pixel-art houses, the Hunter, Part 2
+6. ✅ Menu with New game, touch controls for phones, GitHub Pages deploy
+7. Next ideas: your own pixel-art houses, the Hunter, Part 2
