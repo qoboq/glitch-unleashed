@@ -1,32 +1,32 @@
 // All the numbers you might want to tweak live here.
 
-// Size of one map tile in pixels (from GAME.md: 16x16).
+// Size of one map tile in pixels.
 export const TILE_SIZE = 16;
 
-// How big the test level is, in tiles.
-export const MAP_WIDTH = 40;
-export const MAP_HEIGHT = 30;
-
-// Every pixel of art is drawn this many times bigger on screen.
-// Keep it a whole number so pixels stay crisp.
+// Every pixel of art is drawn at least this many times bigger on screen.
+// (On big screens the game zooms in more by itself, always by a whole number,
+// so pixels stay crisp.)
 export const PIXEL_SCALE = 3;
+
+// Size of ONE character frame. Characters are drawn in code in
+// src/characters.js, 4 rows (down, left, right, up) x 4 walk frames.
+export const FRAME_W = 32;
+export const FRAME_H = 40;
 
 // The player character.
 export const PLAYER = {
-  // Size of ONE frame in the sprite sheet. Change to 64 if you pick 64x64 sprites.
-  frameSize: 32,
-
-  // Walking speed in pixels per second (art pixels, before scaling).
-  speed: 90,
-
+  // Walking speed in art pixels per second.
+  speed: 95,
   // Frames per second for the walk animation.
   walkFps: 8,
-
-  // Set this to a PNG path (e.g. 'assets/sprites/player.png', inside the
-  // public/ folder) to use real art. Leave it null to use the built-in
-  // code-drawn Player. Sheet layout is described in GAME.md.
-  sheet: null,
-
-  // How many frames each walk row has in the sheet.
-  framesPerRow: 4,
 };
+
+// Sound volume from 0 (silent) to 1 (loud). Press M in the game to mute.
+export const VOLUME = 0.5;
+
+// The font used for all the text.
+export const FONT = '"Jersey 15", "Courier New", monospace';
+
+// The purple you must not touch, and its friends.
+export const PURPLE = 0xa23ce0;
+export const GLITCH_GREEN = 0x42f56c;
