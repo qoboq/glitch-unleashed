@@ -30,7 +30,7 @@ export class RoomScene extends WorldScene {
     this.solved = false;
     this.leaving = false;
     ui.dark(true);
-    ui.scene.showHelp(false);
+    ui.scene.showHelp(false); // the room is small, keep the screen clear
     ui.item(state.hasRock ? 'glitch-rock' : null, 'Glitch rock');
 
     // walls all around; the top wall is 2 tiles tall so the door fits in it

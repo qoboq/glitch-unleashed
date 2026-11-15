@@ -12,8 +12,11 @@ export class TitleScene extends Phaser.Scene {
   }
 
   create() {
+    this.starting = false;
+    this.newText = null;
     this.hasSave = loadState() && state.part !== 'end';
     ui.scene.showHelp(false);
+    ui.scene.setGame(false);
     ui.hint(null);
     ui.progress(null);
     ui.item(null);
@@ -32,8 +35,19 @@ export class TitleScene extends Phaser.Scene {
       return sprite;
     });
 
-    const start = this.hasSave ? 'SPACE: carry on        N: new game' : 'Press SPACE to start';
-    this.startText = this.add.text(0, 0, start, { fontFamily: FONT, color: '#ffffff', stroke: '#141414' }).setOrigin(0.5);
+    // one button to start; two if there is a saved game. They work with a
+    // tap or click as well as with the keys.
+    const style = { fontFamily: FONT, color: '#ffffff', stroke: '#141414' };
+    const key = (name, label) => (ui.touch ? label : `${name}: ${label}`);
+    if (this.hasSave) {
+      this.startText = this.add.text(0, 0, key('SPACE', 'Carry on'), style).setOrigin(0.5);
+      this.newText = this.add.text(0, 0, key('N', 'New game'), style).setOrigin(0.5);
+      this.newText.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.startGame(true));
+    } else {
+      this.startText = this.add.text(0, 0, ui.touch ? 'Tap to start' : 'Press SPACE to start', style).setOrigin(0.5);
+      this.input.on('pointerdown', () => this.startGame(false)); // tap anywhere
+    }
+    this.startText.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.startGame(false));
     this.tweens.add({ targets: this.startText, alpha: 0.35, duration: 600, yoyo: true, repeat: -1 });
     this.partText = this.add.text(0, 0, 'Part 1:  The Glitch House', { fontFamily: FONT, color: '#141414' }).setOrigin(0.5);
 
@@ -66,10 +80,13 @@ export class TitleScene extends Phaser.Scene {
     this.cast.forEach((sprite, i) => sprite.setScale(u * 1.5).setPosition(W / 2 + (i - (this.cast.length - 1) / 2) * gap, groundY + 12 * u));
 
     this.partText.setPosition(W / 2, H * 0.24 + this.logo.displayHeight / 2 + 10 * u).setFontSize(12 * u);
-    this.startText.setPosition(W / 2, H - 14 * u).setFontSize(14 * u).setStroke('#141414', 2 * u);
+    const gapX = this.newText ? 50 * u : 0;
+    this.startText.setPosition(W / 2 - gapX, H - 14 * u).setFontSize(14 * u).setStroke('#141414', 2 * u);
+    this.newText?.setPosition(W / 2 + gapX, H - 14 * u).setFontSize(14 * u).setStroke('#141414', 2 * u);
   }
 
   startGame(fresh) {
+    if (this.starting) return;
     this.starting = true;
     unlockAudio();
     sfx.pickup();

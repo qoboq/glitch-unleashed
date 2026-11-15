@@ -19,6 +19,8 @@ export class WorldScene extends Phaser.Scene {
     this.frozen = false; // true during little story scenes
     this.zapping = false;
     this.facing = 'down';
+    this.near = null;
+    this.standingOn = null;
 
     this.cursors = this.input.keyboard.createCursorKeys();
     this.wasd = this.input.keyboard.addKeys('W,A,S,D');
@@ -32,6 +34,7 @@ export class WorldScene extends Phaser.Scene {
     this.scale.on('resize', this.fitCamera, this);
     this.events.once('shutdown', () => this.scale.off('resize', this.fitCamera, this));
     ui.scene.showHelp(true);
+    ui.scene.setGame(true);
     ui.hint(null);
   }
 
@@ -97,10 +100,14 @@ export class WorldScene extends Phaser.Scene {
     const cam = this.cameras.main;
     const W = this.scale.width, H = this.scale.height;
     if (follow) {
-      cam.setZoom(Math.max(PIXEL_SCALE, Math.ceil(H / worldH)));
+      // small screens (phones) zoom in a little less, so you can see more
+      const zoom = Phaser.Math.Clamp(Math.floor(H / 180), 2, PIXEL_SCALE);
+      cam.setZoom(Math.max(zoom, Math.ceil(H / worldH)));
       cam.setBounds(0, 0, worldW, worldH);
     } else {
-      cam.setZoom(Math.max(1, Math.floor(Math.min(W / worldW, H / worldH))));
+      // whole-number zoom when there is room, otherwise just fit the screen
+      const fit = Math.min(W / worldW, H / worldH);
+      cam.setZoom(fit >= 2 ? Math.floor(fit) : fit);
       cam.centerOn(worldW / 2, worldH / 2);
     }
   }
@@ -116,6 +123,7 @@ export class WorldScene extends Phaser.Scene {
     const down = cursors.down.isDown || wasd.S.isDown;
 
     const dir = new Phaser.Math.Vector2((right ? 1 : 0) - (left ? 1 : 0), (down ? 1 : 0) - (up ? 1 : 0));
+    if (dir.lengthSq() === 0) dir.set(ui.pad.x, ui.pad.y); // thumb stick on phones
     if (stop) dir.set(0, 0);
     dir.normalize().scale(PLAYER.speed); // same speed diagonally
     player.setVelocity(dir.x, dir.y);
@@ -124,7 +132,7 @@ export class WorldScene extends Phaser.Scene {
     if (dir.lengthSq() === 0) {
       if (!this.frozen) this.standStill();
     } else {
-      if (dir.x !== 0) this.facing = dir.x < 0 ? 'left' : 'right';
+      if (Math.abs(dir.x) >= Math.abs(dir.y)) this.facing = dir.x < 0 ? 'left' : 'right';
       else this.facing = dir.y < 0 ? 'up' : 'down';
       player.anims.play(`player-walk-${this.facing}`, true);
     }
@@ -142,7 +150,7 @@ export class WorldScene extends Phaser.Scene {
     }
     if (this.near) {
       this.bubble.setPosition(this.near.x, this.near.y - this.near.top + Math.round(Math.sin(this.time.now / 160) * 1.5)).setVisible(true);
-      ui.hint(`SPACE: ${this.near.label}`);
+      ui.hint(this.near.label);
     } else {
       this.bubble.setVisible(false);
       ui.hint(null);

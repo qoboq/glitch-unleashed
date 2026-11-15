@@ -13,6 +13,7 @@ export class EndScene extends Phaser.Scene {
   create() {
     stopMusic();
     ui.scene.showHelp(false);
+    ui.scene.setGame(false);
     ui.hint(null);
     ui.item(null);
     const style = { fontFamily: FONT, color: '#ffffff', align: 'center' };
@@ -20,7 +21,7 @@ export class EndScene extends Phaser.Scene {
     this.ghostB = this.add.text(0, 0, 'END OF PART 1', { ...style, color: '#42f56c' }).setOrigin(0.5);
     this.big = this.add.text(0, 0, 'END OF PART 1', style).setOrigin(0.5);
     this.small = this.add.text(0, 0, 'The Entity Mayor is still out there...\n\nTo be continued!', { ...style, color: '#d58cff' }).setOrigin(0.5);
-    this.again = this.add.text(0, 0, 'Press SPACE to go back to the start', { ...style, color: '#8a8a98' }).setOrigin(0.5);
+    this.again = this.add.text(0, 0, ui.touch ? 'Tap to go back to the start' : 'Press SPACE to go back to the start', { ...style, color: '#8a8a98' }).setOrigin(0.5);
     this.entity = this.add.sprite(0, 0, 'entity', 0).setOrigin(0.5, 0.9);
 
     this.time.addEvent({ delay: 120, loop: true, callback: () => this.jitter() });
@@ -30,11 +31,14 @@ export class EndScene extends Phaser.Scene {
     this.layout();
     this.cameras.main.fadeIn(1200, 0, 0, 0);
 
-    this.time.delayedCall(1500, () => this.input.keyboard.on('keydown', (event) => {
-      if (event.key !== ' ' && event.key !== 'Enter') return;
+    const back = () => {
       resetState();
       this.scene.start('Title');
-    }));
+    };
+    this.time.delayedCall(1500, () => {
+      this.input.keyboard.on('keydown', (event) => { if (event.key === ' ' || event.key === 'Enter') back(); });
+      this.input.on('pointerdown', back);
+    });
   }
 
   layout() {
