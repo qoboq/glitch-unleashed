@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "art": "node tools/make-art.mjs",
+    "map": "node tools/make-town.mjs"
   },
   "dependencies": {
     "phaser": "^3.90.0"
