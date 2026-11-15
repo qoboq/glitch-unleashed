@@ -24,7 +24,7 @@ export const PLAYER = {
 
   // Set this to a PNG path (e.g. 'assets/sprites/player.png', inside the
   // public/ folder) to use real art. Leave it null to use the built-in
-  // placeholder dummy. Sheet layout is described in GAME.md.
+  // code-drawn Player. Sheet layout is described in GAME.md.
   sheet: null,
 
   // How many frames each walk row has in the sheet.

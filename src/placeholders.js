@@ -58,8 +58,10 @@ export function makeGroundTiles(scene, key) {
   tex.refresh();
 }
 
-// The dummy's sprite sheet: 4 rows (down, left, right, up) x 4 walk frames.
-// Same layout real art should use, so swapping is easy.
+// The player's sprite sheet, based on the kid's drawing of PLAYER:
+// yellow square head, blue eyes, black moustache, yellow shirt with a red X,
+// green trousers, thick black outlines.
+// 4 rows (down, left, right, up) x 4 walk frames. Real art should use the same layout.
 export const DIRECTIONS = ['down', 'left', 'right', 'up'];
 
 export function makeDummySheet(scene, key, frameSize, framesPerRow) {
@@ -67,11 +69,12 @@ export function makeDummySheet(scene, key, frameSize, framesPerRow) {
   const ctx = tex.getContext();
   const u = frameSize / 32; // drawn on a 32x32 grid, scaled up for bigger frames
 
-  const OUTLINE = '#1c1c28';
-  const SKIN = '#f2c94c';  // crash-test-dummy yellow
-  const SHADE = '#c99a2e';
-  const SHIRT = '#3d7bd9';
-  const PANTS = '#2b3a67';
+  // Colours picked from the drawing. Change these to recolour the player.
+  const OUTLINE = '#141414';
+  const YELLOW = '#f5c933';
+  const RED = '#d8423a';
+  const GREEN = '#3e8e2c';
+  const EYE = '#2b9ce0';
 
   DIRECTIONS.forEach((dir, row) => {
     for (let f = 0; f < framesPerRow; f++) {
@@ -80,14 +83,17 @@ export function makeDummySheet(scene, key, frameSize, framesPerRow) {
       const step = [0, 1, 0, -1][f % 4]; // which leg is forward
       const bob = f % 2 === 1 ? -1 : 0;   // body bobs up on step frames
 
+      const headY = 2 + bob;
+      const bodyY = 11 + bob;
+
       const parts = [
         // [x, y, w, h, color]
-        [12, 22 + bob, 3, 6 + step, PANTS],          // left leg
-        [17, 22 + bob, 3, 6 - step, PANTS],          // right leg
-        [8, 14 + bob - step, 2, 6, SKIN],             // left arm
-        [22, 14 + bob + step, 2, 6, SKIN],            // right arm
-        [10, 13 + bob, 12, 10, SHIRT],                // body
-        [11, 3 + bob, 10, 10, SKIN],                  // head
+        [10, 22 + bob, 5, 6 + bob * -1 + step, GREEN], // left leg
+        [16, 22 + bob, 5, 6 + bob * -1 - step, GREEN], // right leg
+        [7, bodyY - step, 2, 9, YELLOW],               // left arm
+        [22, bodyY + step, 2, 9, YELLOW],              // right arm
+        [10, bodyY, 11, 10, YELLOW],                   // body
+        [11, headY, 9, 8, YELLOW],                     // head
       ];
 
       const rect = (x, y, w, h, color) => {
@@ -96,24 +102,45 @@ export function makeDummySheet(scene, key, frameSize, framesPerRow) {
       };
 
       // soft shadow on the ground
-      rect(10, 28, 12, 2, 'rgba(0,0,0,0.25)');
+      rect(9, 28, 13, 2, 'rgba(0,0,0,0.25)');
       // outlines first, then fills, so outlines never cover other parts
       for (const [x, y, w, h] of parts) rect(x - 1, y - 1, w + 2, h + 2, OUTLINE);
       for (const [x, y, w, h, c] of parts) rect(x, y, w, h, c);
 
-      // face shows which way the dummy is looking
-      const headY = 3 + bob;
-      if (dir === 'down') {
-        rect(13, headY + 4, 2, 2, OUTLINE);
-        rect(17, headY + 4, 2, 2, OUTLINE);
-        rect(14, headY + 8, 4, 1, SHADE);
-      } else if (dir === 'left') {
-        rect(12, headY + 4, 2, 2, OUTLINE);
-      } else if (dir === 'right') {
-        rect(18, headY + 4, 2, 2, OUTLINE);
+      // red X across the shirt (straps cross on the back too)
+      if (dir === 'down' || dir === 'up') {
+        for (let i = 0; i < 10; i++) {
+          rect(10 + i, bodyY + i, 2, 1, RED);
+          rect(19 - i, bodyY + i, 2, 1, RED);
+        }
       } else {
-        rect(13, headY + 2, 6, 1, SHADE); // back of the head
+        // from the side you only see one strap going over the shoulder
+        rect(15, bodyY, 2, 10, RED);
       }
+
+      // eye: black square with a blue spot, like in the drawing
+      const eye = (x) => {
+        rect(x, headY + 2, 2, 2, OUTLINE);
+        rect(x + 1, headY + 3, 1, 1, EYE);
+      };
+
+      if (dir === 'down') {
+        eye(12);
+        eye(17);
+        // big black moustache-smile
+        rect(12, headY + 5, 7, 1, OUTLINE);
+        rect(12, headY + 6, 3, 1, OUTLINE);
+        rect(16, headY + 6, 3, 1, OUTLINE);
+      } else if (dir === 'left') {
+        eye(11);
+        rect(11, headY + 5, 4, 1, OUTLINE);
+        rect(11, headY + 6, 2, 1, OUTLINE);
+      } else if (dir === 'right') {
+        eye(18);
+        rect(16, headY + 5, 4, 1, OUTLINE);
+        rect(18, headY + 6, 2, 1, OUTLINE);
+      }
+      // facing up: back of the head, no face
     }
   });
 

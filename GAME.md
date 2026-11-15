@@ -8,7 +8,7 @@ _To be written._
 
 ## Characters
 
-- **Player** – for now a yellow placeholder dummy.
+- **Player** – yellow square head, blue eyes, black moustache, yellow shirt with a red X, green trousers (from the drawing). Drawn in code for now in `src/placeholders.js`.
 
 ## Puzzles
 
@@ -35,7 +35,7 @@ _To be written._
 
 ## Feature order
 
-1. ✅ Player movement + walk animation (placeholder dummy on a grass field)
+1. ✅ Player movement + walk animation (Player drawn in code on a grass field)
 2. Tiled level with collisions
 3. Dialogue box when talking to characters
 4. First puzzle
